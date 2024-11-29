@@ -45,20 +45,27 @@ DQN_MODEL_FILE = "highway_dqn.model.bin"
 
 # env = gym.make('highway-v0', render_mode='rgb_array')
 # env.unwrapped.configure({
-#     "duration": 1000,  # Total steps in the episode
-#     "vehicles_count": 50,  # Traffic density
+#     "duration": 60,  # Total steps in the episode
+#     "vehicles_count": 20,  # Traffic density
 #     "lanes_count": 4,  # Number of lanes
 #     "reward_speed_range": [20, 30],  # Speed range for rewards
 #     "policy_frequency": 2,  # Action frequency
 #     "simulation_frequency": 24,  # Simulation frequency
-#     "collision_reward": -10,  # Collision reward
+#     "collision_reward": -1.0,  # Collision reward
 #     "right_lane_reward": 0,  # Reward for driving on the rightmost lanes
-#     "lane_change_reward": 0,  # Reward for lane changes
-#     "speed_reward": 10,  # Speed reward
+#     "lane_change_reward": 0.1,  # Reward for lane changes
+#     "speed_reward": 1.0,  # Speed reward
 # })
 from stable_baselines3 import DQN
 from stable_baselines3.common.callbacks import BaseCallback
 import os
+
+from torch.optim.lr_scheduler import LambdaLR
+
+# dynamic learning rate schedule
+optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
+scheduler = LambdaLR(optimizer, lr_lambda=lambda t: 1 / (1 + 1e-5 * t))
+
 
 # Create a callback to save the model periodically
 class SaveOnBestTrainingRewardCallback(BaseCallback):
@@ -104,11 +111,13 @@ else:
                 exploration_fraction=0.7,
                 verbose=1,
                 tensorboard_log='highway_dqn/')
+
 try:
     print("Press Ctrl+C to interrupt training. ")
-    # model.learn(int(2e5), callback=callback)
+    model.learn(int(2e5), callback=callback)
 except KeyboardInterrupt:
     print("\nKeyboardInterrupt detected! Cleaning up and exiting gracefully.")        
+
 
 # model.save(DQN_MODEL_FILE)
 
