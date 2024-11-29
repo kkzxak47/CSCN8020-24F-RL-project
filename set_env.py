@@ -24,7 +24,7 @@ from highway_env.envs import HighwayEnv
 env = gym.make('highway-v0', render_mode='rgb_array')
 
 env.unwrapped.configure({
-    "duration": 100,  # Total steps in the episode
+    "duration": 60,  # Total steps in the episode
     "vehicles_count": 20,
     "lanes_count": 4,  # Number of lanes
     "reward_speed_range": [20, 30],  # Speed range for rewards
@@ -32,15 +32,14 @@ env.unwrapped.configure({
     "simulation_frequency": 15,  # Simulation frequency
     "collision_reward": -1,  # Collision reward
     "right_lane_reward": 0,  # Reward for driving on the rightmost lanes
-    "lane_change_reward": 0.05,  # Reward for lane changes
+    "lane_change_reward": 0.01,  # Reward for lane changes
     # "ego_spacing": 2.0,  # Desired distance between the ego vehicle and the leading vehicle
     "controlled_vehicle": {
         "type": "highway_env.vehicle.behavior.IDMVehicle",
         "parameters": {"max_speed": 30}  # Increase max speed
     },
     # 'other_vehicles_type': 'highway_env.vehicle.behavior.DefensiveVehicle',
-    "low_speed_reward": -0.1,  # Low speed reward
-    "high_speed_reward": 0.8,    # Reward for maintaining high speed
+    "high_speed_reward": 0.5,    # Reward for maintaining high speed
     "initial_spacing": 2,  # Initial spacing between vehicles
     "terminal_conditions": ["off_road", "time_limit"],
     "vehicles_density": 1,
