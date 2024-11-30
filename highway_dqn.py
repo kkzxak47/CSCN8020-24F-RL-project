@@ -21,15 +21,7 @@ import gymnasium as gym
 import highway_env
 
 gym.register_envs(highway_env)
-from gym.envs.registration import register
 
-# Register the custom environment
-register(
-    id="CustomHighway-v0",  # Custom environment ID
-    entry_point=".set_env:CustomHighwayEnv",  # Replace with the actual path to the class
-)
-
-print('highway_env registered')
 
 # Agent
 from stable_baselines3 import DQN, PPO
