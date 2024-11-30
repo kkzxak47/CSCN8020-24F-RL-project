@@ -2,7 +2,7 @@ import gymnasium as gym
 import sys
 import os
 sys.path.append(os.getcwd())
-
+from custom_envs.custom_highway_env import CustomHighwayEnv
 
 
 env = gym.make('CustomHighway-v0', render_mode='rgb_array')
@@ -25,13 +25,13 @@ env.unwrapped.configure({
     },
     # 'other_vehicles_type': 'highway_env.vehicle.behavior.DefensiveVehicle',
     "high_speed_reward": 0.5,    # Reward for maintaining high speed
-    "distance_reward": 0.5,
+    "distance_reward": 0.1,  # 0.5 is too high, tweak it
     "initial_spacing": 2,  # Initial spacing between vehicles
     "terminal_conditions": ["off_road", "time_limit"],
     "vehicles_density": 1,
     "offroad_terminal": True,
     # "show_trajectories": True,
-    "road_length": 2400,  # set this to a large number to avoid road length limit, also 40 * 60 = 2400, this is the max_speed * duration
+    "road_length": 1800,  # set this to a large number to avoid road length limit, also 30 * 60 = 2400, this is the max_speed * duration
 })
 print(env.unwrapped.config)
 env.reset()
