@@ -31,7 +31,7 @@ env.unwrapped.configure({
     "vehicles_density": 1,
     "offroad_terminal": True,
     # "show_trajectories": True,
-    "road_length": 1800,  # set this to a large number to avoid road length limit, also 30 * 60 = 2400, this is the max_speed * duration
+    "road_length": 1800,  # set this to a large number to avoid road length limit, also 30 * 60 = 1800, this is the max_speed * duration
 })
 print(env.unwrapped.config)
 env.reset()
