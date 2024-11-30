@@ -1,27 +1,12 @@
 import gymnasium as gym
-from highway_env.envs import HighwayEnv
+import sys
+import os
+sys.path.append(os.getcwd())
 
-# class CustomHighwayEnv(HighwayEnv):
-#     def _reward(self, action):
-#         vehicle = self.vehicle
-#         speed = vehicle.speed
-#         max_speed = vehicle.MAX_SPEED
 
-#         # Reward based on speed
-#         speed_reward = speed / max_speed
 
-#         # Penalize collisions
-#         collision_penalty = -1 if self.vehicle.crashed else 0
-
-#         # Penalize low speed
-#         low_speed_penalty = -0.1 if speed < max_speed / 2 else 0
-
-#         # Reward efficient lane changes
-#         lane_change_reward = 0.1 if action in [0, 2] else 0
-
-#         return speed_reward + collision_penalty + low_speed_penalty + lane_change_reward
-
-env = gym.make('highway-v0', render_mode='rgb_array')
+env = gym.make('CustomHighway-v0', render_mode='rgb_array')
+# env = gym.make('highway-v0', render_mode='rgb_array')
 
 env.unwrapped.configure({
     "duration": 60,  # Total steps in the episode
@@ -40,11 +25,13 @@ env.unwrapped.configure({
     },
     # 'other_vehicles_type': 'highway_env.vehicle.behavior.DefensiveVehicle',
     "high_speed_reward": 0.5,    # Reward for maintaining high speed
+    "distance_reward": 0.5,
     "initial_spacing": 2,  # Initial spacing between vehicles
     "terminal_conditions": ["off_road", "time_limit"],
     "vehicles_density": 1,
     "offroad_terminal": True,
     # "show_trajectories": True,
+    "road_length": 2400,  # set this to a large number to avoid road length limit, also 40 * 60 = 2400, this is the max_speed * duration
 })
 print(env.unwrapped.config)
 env.reset()

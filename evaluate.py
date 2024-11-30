@@ -1,9 +1,18 @@
+import sys
+import os
+sys.path.append(os.getcwd())  # Add the current directory to sys.path
 import gymnasium as gym
-import highway_env
+# import highway_env
 import matplotlib.pyplot as plt
 import numpy as np
 from stable_baselines3 import DQN, PPO
 from gymnasium.wrappers import RecordVideo
+
+
+import custom_envs.custom_highway_env as custom_highway_env
+from custom_envs.custom_highway_env import CustomHighwayEnv
+import sys
+
 
 import sys
 step = sys.argv[1]
@@ -19,9 +28,15 @@ env.unwrapped.render_mode = "human"
 # env = RecordVideo(env, video_folder='videos', episode_trigger=lambda e: True)
 env.reset()
 
-for episode in range(3):    
+distances = []
+for episode in range(15):    
     (obs, info), done, truncated = env.reset(), False, False
+    print(f"Episode {episode + 1}")
     while not (done or truncated):
         action, _ = model.predict(obs, deterministic=True)
         obs, reward, done, truncated, info = env.step(int(action))
+    distances.append(env.unwrapped.vehicle.position[0])
+print(f"Mean distance: {np.mean(distances)}")
+print(f"Max distance: {np.max(distances)}")
+print(f"Min distance: {np.min(distances)}")
 env.close()
