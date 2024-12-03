@@ -23,14 +23,14 @@ model = PPO(
     batch_size=batch_size,
     n_epochs=10,
     learning_rate=5e-4,
-    gamma=0.8,
+    gamma=0.9,
     verbose=2,
     tensorboard_log="highway_ppo/",
     
 )
 
 # Train the model
-model.learn(total_timesteps=300000, callback=callback)  # Adjust timesteps as needed
+model.learn(total_timesteps=3e5, callback=callback)  # Adjust timesteps as needed
 
 # Save the model
-model.save("ppo_highway_model")
+model.save("ppo_highway_model-3e5")
