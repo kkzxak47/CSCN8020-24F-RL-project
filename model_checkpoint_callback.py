@@ -4,29 +4,32 @@ from stable_baselines3.common.callbacks import BaseCallback
 
 # Create a callback to save the model periodically
 class SaveOnBestTrainingRewardCallback(BaseCallback):
-    def __init__(self, save_freq: int, save_path: str, verbose=1, update_distance=None):
+    def __init__(self, save_freq: int, save_path: str, verbose=1):
         super(SaveOnBestTrainingRewardCallback, self).__init__(verbose)
         self.save_freq = save_freq
         self.save_path = save_path
         self.best_mean_reward = -float("inf")
-        self.update_distance = update_distance
     
-    def _on_training_start(self) -> None:
-        print("*** on training start")
-        print(self.num_timesteps)
-        print(f"{self.training_env.envs[0].unwrapped.steps}")
+    def _on_rollout_end(self) -> None:
+        env = self.training_env.envs[0].unwrapped
+        self.logger.record("rollout/distance", env.vehicle.position[0] - env.initial_position)
+        return super()._on_rollout_end()
+    
+    # def _on_training_start(self) -> None:
+    #     print("*** on training start")
+    #     print(self.num_timesteps)
+    #     print(f"{self.training_env.envs[0].unwrapped.steps}")
 
-    def _on_training_end(self) -> None:
-        print("*** on training end")
-        print(self.num_timesteps)
-        print(f"{self.training_env.envs[0].unwrapped.steps}")
+    # def _on_training_end(self) -> None:
+    #     print("*** on training end")
+    #     print(self.num_timesteps)
+    #     print(f"{self.training_env.envs[0].unwrapped.steps}")
 
     def _on_step(self) -> bool:
         # print speed, find position
-        env = self.training_env.envs[0]
+        
         # print(env.unwrapped.vehicle.speed, env.unwrapped.vehicle.position)
-        if self.update_distance:
-            self.update_distance(env.unwrapped.vehicle.position[0])  # save the distance covered by the controled vehicle from the start
+        
         if self.n_calls % self.save_freq == 0:
             model_path = os.path.join(self.save_path, f"model_step_{self.n_calls}")
             self.model.save(model_path)

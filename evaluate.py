@@ -15,11 +15,13 @@ import sys
 
 
 import sys
-# step = sys.argv[1]
-# assert step.isnumeric() and int(step) > 0 and int(step) % 1000 == 0, "Invalid step number. Please provide a valid step number."
-# DQN_MODEL_PATH = f"./checkpoints/model_step_{step}.zip"
-# DQN_MODEL_PATH = "highway_dqn.model.bin"
-DQN_MODEL_PATH = "checkpoints-dqn-342k/model_step_342000.zip"
+if len(sys.argv) > 1:
+    step = sys.argv[1]
+    assert step.isnumeric() and int(step) > 0 and int(step) % 1000 == 0, "Invalid step number. Please provide a valid step number."
+    DQN_MODEL_PATH = f"./checkpoints/model_step_{step}.zip"
+else:
+    DQN_MODEL_PATH = "highway_dqn.model.bin"
+    # DQN_MODEL_PATH = "checkpoints-dqn-342k/model_step_342000.zip"
 # load the model
 model = DQN.load(DQN_MODEL_PATH)
 # model = PPO.load("highway_ppo.model.bin")
@@ -30,13 +32,13 @@ env.unwrapped.render_mode = "human"
 env.reset()
 
 distances = []
-for episode in range(5):    
+for episode in range(3):
     (obs, info), done, truncated = env.reset(), False, False
     print(f"Episode {episode + 1}")
     while not (done or truncated):
         action, _ = model.predict(obs, deterministic=True)
         obs, reward, done, truncated, info = env.step(int(action))
-    distances.append(env.unwrapped.vehicle.position[0])
+    distances.append(env.unwrapped.vehicle.position[0] - env.unwrapped.initial_position)
 print(f"Mean distance: {np.mean(distances)}")
 print(f"Max distance: {np.max(distances)}")
 print(f"Min distance: {np.min(distances)}")

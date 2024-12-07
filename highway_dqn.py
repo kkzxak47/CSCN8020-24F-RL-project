@@ -34,7 +34,7 @@ from tqdm.notebook import trange
 
 # !git clone https://github.com/Farama-Foundation/HighwayEnv.git 2> /dev/null
 # sys.path.insert(0, './HighwayEnv/scripts/')
-from HighwayEnv.scripts.utils import record_videos, show_videos
+# from HighwayEnv.scripts.utils import record_videos, show_videos
 
 DQN_MODEL_FILE = "highway_dqn.model.bin"
 
@@ -70,7 +70,7 @@ from torch.optim.lr_scheduler import LambdaLR
 
 # Define a custom learning rate schedule
 def lr_schedule(progress_remaining):
-    return 1e-3 * (1 / (1 + 1e-5 * (1 - progress_remaining)))
+    return 0.0009 * progress_remaining + 0.0001
 
 
 from model_checkpoint_callback import callback
@@ -88,19 +88,19 @@ else:
                 # learning_rate=5e-4,
                 learning_rate=lr_schedule,
                 buffer_size=15000,
-                learning_starts=200,
+                learning_starts=8000,
                 batch_size=32,
                 gamma=0.8,
                 train_freq=1,
                 gradient_steps=1,
                 target_update_interval=50,
-                exploration_fraction=0.7,
+                exploration_fraction=0.5,
                 verbose=1,
                 tensorboard_log='highway_dqn/')
 
 try:
     print("Press Ctrl+C to interrupt training. ")
-    model.learn(int(1e6), callback=callback)
+    model.learn(int(1e6), callback=callback)  # 1 million steps
 except KeyboardInterrupt:
     print("\nKeyboardInterrupt detected! Cleaning up and exiting gracefully.")        
 
@@ -126,13 +126,13 @@ from gymnasium.wrappers import RecordVideo
 env = RecordVideo(env, video_folder='videos', episode_trigger=lambda e: True)
 # env = record_videos(env)
 for episode in trange(3, desc='Test episodes'):
-    (obs, info), done = env.reset(), False
-    while not done:
+    (obs, info), done, truncated = env.reset(), False, False
+    while not (done or truncated):
         action, _ = model.predict(obs, deterministic=True)
         obs, reward, done, truncated, info = env.step(int(action))
         # env.render()
 env.close()
-show_videos()
+# show_videos()
 
 
 

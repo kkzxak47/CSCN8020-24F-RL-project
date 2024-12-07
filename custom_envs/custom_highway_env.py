@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 import gymnasium as gym
 
 from highway_env.envs import HighwayEnv
@@ -25,11 +26,23 @@ register(
 print('CustomHighway-v0 registered')
 assert 'CustomHighway-v0' in gym.envs.registry.keys()
 # print(gym.envs.registry.keys())
+logger = logging.getLogger(__name__)
 
+
+ROAD_LENGTH = 90000000  # long road, no way to reach the end
 
 Observation = np.ndarray
 
 class CustomHighwayEnv(HighwayEnv):
+    def __init__(self, config: dict = None, render_mode: str | None = None) -> None:
+        super().__init__(config=config, render_mode=render_mode)
+        self.initial_position = 0
+    
+    def _reset(self) -> None:
+        logger.info("Resetting environment, customized _reset, set initial_position to controlled vehicle position")
+        super()._reset()
+        self.initial_position = self.vehicle.position[0]
+
     def _reward(self, action: Action) -> float:
         """
         The reward is defined to foster driving at high speed, on the rightmost lanes, and to avoid collisions.
@@ -45,7 +58,7 @@ class CustomHighwayEnv(HighwayEnv):
                 reward,
                 [
                     self.config["collision_reward"],
-                    self.config["high_speed_reward"] + self.config["right_lane_reward"],
+                    self.config["high_speed_reward"] + self.config["distance_reward"],
                 ],
                 [0, 1],
             )
@@ -69,5 +82,5 @@ class CustomHighwayEnv(HighwayEnv):
             "right_lane_reward": lane / max(len(neighbours) - 1, 1),
             "high_speed_reward": np.clip(scaled_speed, 0, 1),
             "on_road_reward": float(self.vehicle.on_road),
-            "distance_reward": self.vehicle.position[0] / self.vehicle.lane.length,
+            "distance_reward": (self.vehicle.position[0] - self.initial_position) / ROAD_LENGTH,
         }
