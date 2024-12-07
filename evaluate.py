@@ -32,7 +32,7 @@ env.unwrapped.render_mode = "human"
 env.reset()
 
 distances = []
-for episode in range(3):
+for episode in range(5):
     (obs, info), done, truncated = env.reset(), False, False
     print(f"Episode {episode + 1}")
     while not (done or truncated):

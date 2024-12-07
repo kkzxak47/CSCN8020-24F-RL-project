@@ -29,7 +29,7 @@ assert 'CustomHighway-v0' in gym.envs.registry.keys()
 logger = logging.getLogger(__name__)
 
 
-ROAD_LENGTH = 90000000  # long road, no way to reach the end
+ROAD_LENGTH = 1800  # long road, no way to reach the end
 
 Observation = np.ndarray
 

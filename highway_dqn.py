@@ -70,7 +70,10 @@ from torch.optim.lr_scheduler import LambdaLR
 
 # Define a custom learning rate schedule
 def lr_schedule(progress_remaining):
-    return 0.0009 * progress_remaining + 0.0001
+    """
+    from 0.001 to 0.00005
+    """
+    return 0.00095 * progress_remaining + 0.00005
 
 
 from model_checkpoint_callback import callback
@@ -86,21 +89,21 @@ else:
     model = DQN('MlpPolicy', env,
                 policy_kwargs=dict(net_arch=[64, 128, 64]),
                 # learning_rate=5e-4,
-                learning_rate=lr_schedule,
+                # learning_rate=lr_schedule,
                 buffer_size=15000,
                 learning_starts=8000,
-                batch_size=32,
-                gamma=0.8,
-                train_freq=1,
-                gradient_steps=1,
-                target_update_interval=50,
-                exploration_fraction=0.5,
+                # batch_size=32,
+                gamma=0.9,
+                # train_freq=1,
+                # gradient_steps=1,
+                # target_update_interval=50,
+                # exploration_fraction=0.5,
                 verbose=1,
                 tensorboard_log='highway_dqn/')
 
 try:
     print("Press Ctrl+C to interrupt training. ")
-    model.learn(int(1e6), callback=callback)  # 1 million steps
+    model.learn(int(3e6), callback=callback)  # 1 million steps
 except KeyboardInterrupt:
     print("\nKeyboardInterrupt detected! Cleaning up and exiting gracefully.")        
 
