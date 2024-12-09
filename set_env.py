@@ -25,7 +25,7 @@ env.unwrapped.configure({
     },
     # 'other_vehicles_type': 'highway_env.vehicle.behavior.DefensiveVehicle',
     "high_speed_reward": 0.25,    # Reward for maintaining high speed
-    "distance_reward": 0.05,  # 0.5 is too high, tweak it
+    "distance_reward": 0.25,  # 0.5 is too high, tweak it
     "initial_spacing": 2,  # Initial spacing between vehicles
     "terminal_conditions": ["off_road", "time_limit"],
     "vehicles_density": 1,

@@ -77,10 +77,13 @@ class CustomHighwayEnv(HighwayEnv):
         scaled_speed = utils.lmap(
             forward_speed, self.config["reward_speed_range"], [0, 1]
         )
+        scaled_distance = utils.lmap(
+            (self.vehicle.position[0] - self.initial_position), [0, ROAD_LENGTH], [0, 1]
+        )
         return {
             "collision_reward": float(self.vehicle.crashed),
             "right_lane_reward": lane / max(len(neighbours) - 1, 1),
             "high_speed_reward": np.clip(scaled_speed, 0, 1),
             "on_road_reward": float(self.vehicle.on_road),
-            "distance_reward": (self.vehicle.position[0] - self.initial_position) / ROAD_LENGTH,
+            "distance_reward": np.clip(scaled_distance, 0, 1),
         }
