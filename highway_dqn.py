@@ -103,7 +103,7 @@ else:
 
 try:
     print("Press Ctrl+C to interrupt training. ")
-    model.learn(int(6e6), callback=callback)  # 1 million steps
+    model.learn(int(1e6), callback=callback)  # 1 million steps
 except KeyboardInterrupt:
     print("\nKeyboardInterrupt detected! Cleaning up and exiting gracefully.")        
 
