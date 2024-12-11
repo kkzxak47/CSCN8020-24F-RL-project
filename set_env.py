@@ -9,7 +9,7 @@ env = gym.make('CustomHighway-v0', render_mode='rgb_array')
 # env = gym.make('highway-v0', render_mode='rgb_array')
 
 env.unwrapped.configure({
-    "duration": 60,  # Total steps in the episode
+    "duration": 60,  # Time limit [s]
     "vehicles_count": 20,
     "lanes_count": 4,  # Number of lanes
     "reward_speed_range": [20, 30],  # Speed range for rewards
